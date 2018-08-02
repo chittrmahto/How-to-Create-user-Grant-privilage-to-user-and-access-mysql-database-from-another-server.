@@ -1,0 +1,67 @@
+In Database Server (192.10.5.76)
+
+Step 1 : Login to MySql and run select password command.
+
+# mysql -u root -p
+
+mysql> select password('admin@123');
+
++-------------------------------------------+
+
+| password('admin@123')                     |
+
++-------------------------------------------+
+
+| *89FA6EAF8B6264AC8D6E84759027252505A3EAEE |
+
++-------------------------------------------+
+
+1 row in set (0.00 sec)
+
+Step 2 : Copy the password line from previous output. Insert into palce of password. like next commands.
+
+Create User and grant privileges.
+
+please login and run the next commands.
+
+# mysql -u root -p
+
+mysql> CREATE USER 'newusr'@'192.10.5.75' IDENTIFIED BY password '*89FA6EAF8B6264AC8D6E84759027252505A3EAEE';
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'newusr'@'192.10.5.75' WITH GRANT OPTION;
+
+mysql> FLUSH PRIVILEGES;
+
+mysql> \q
+
+# service mysql restart
+
+Step 3 : check Grant Privlage
+
+mysql> SELECT host,user,Grant_priv,Super_priv FROM mysql.user;
+
++--------------+------------------+------------+------------+
+
+| host         | user             | Grant_priv | Super_priv |
+
++--------------+------------------+------------+------------+
+
+| localhost    | root             | Y          | Y          |
+
+| localhost    | mysql.session    | N          | Y          |
+
+| localhost    | mysql.sys        | N          | N          |
+
+| localhost    | debian-sys-maint | Y          | Y          |
+
+| 192.10.5.75  | newuser          | N          | Y          |
+
++--------------+------------------+------------+------------+
+
+12 rows in set (0.00 sec)
+
+Step 4 : Now login with Application Server (192.10.5.75)
+
+#mysql -u newusr -h 192.10.5.76 -p
+
+now you can successfully login with Application Server :)
